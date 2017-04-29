@@ -1,5 +1,5 @@
 VERSION 5.00
-Begin VB.Form FrmTansaksi 
+Begin VB.Form FrmTransaksi 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Transaksi"
    ClientHeight    =   3195
@@ -13,7 +13,7 @@ Begin VB.Form FrmTansaksi
    ScaleHeight     =   3195
    ScaleWidth      =   4680
 End
-Attribute VB_Name = "FrmTansaksi"
+Attribute VB_Name = "FrmTransaksi"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True

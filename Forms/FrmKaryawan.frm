@@ -28,7 +28,7 @@ Begin VB.Form FrmKaryawan
       CommandTimeout  =   30
       CursorType      =   3
       LockType        =   3
-      CommandType     =   8
+      CommandType     =   2
       CursorOptions   =   0
       CacheSize       =   50
       MaxRecords      =   0
@@ -40,14 +40,14 @@ Begin VB.Form FrmKaryawan
       ForeColor       =   -2147483640
       Orientation     =   0
       Enabled         =   -1
-      Connect         =   ""
-      OLEDBString     =   ""
+      Connect         =   $"FrmKaryawan.frx":0000
+      OLEDBString     =   $"FrmKaryawan.frx":008C
       OLEDBFile       =   ""
       DataSourceName  =   ""
       OtherAttributes =   ""
       UserName        =   ""
       Password        =   ""
-      RecordSource    =   ""
+      RecordSource    =   "karyawan"
       Caption         =   "Data Karyawan"
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "MS Sans Serif"
@@ -68,6 +68,7 @@ Begin VB.Form FrmKaryawan
       Top             =   120
       Width           =   6615
       Begin MSDataGridLib.DataGrid dgKaryawan 
+         Bindings        =   "FrmKaryawan.frx":0118
          Height          =   2175
          Left            =   240
          TabIndex        =   21
@@ -284,7 +285,7 @@ Begin VB.Form FrmKaryawan
          Left            =   240
          TabIndex        =   1
          Top             =   360
-         Width           =   975
+         Width           =   735
       End
    End
 End
