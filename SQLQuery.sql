@@ -101,3 +101,6 @@ select * from ulogin
 --INTO login (password,akses)
 --VALUES  ('secret','kasir');
 select cast(getdate() + 3 as datetime)
+select * from pelanggan
+select max(right(id_pelanggan,6)) from pelanggan
+select * from pelanggan where nama like '%a%' 

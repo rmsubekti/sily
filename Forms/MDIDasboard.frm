@@ -74,6 +74,10 @@ Private Sub mnKaryawan_Click()
     FrmKaryawan.Show
 End Sub
 
+Private Sub mnPaket_Click()
+    FrmPaket.Show
+End Sub
+
 Private Sub mnPelanggan_Click()
     FrmPelanggan.Show
 End Sub
