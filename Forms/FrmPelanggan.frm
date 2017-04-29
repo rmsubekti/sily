@@ -1,17 +1,17 @@
 VERSION 5.00
 Begin VB.Form FrmPelanggan 
    BorderStyle     =   1  'Fixed Single
-   Caption         =   "Form1"
-   ClientHeight    =   4980
+   Caption         =   "Data Pelanggan"
+   ClientHeight    =   5175
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   6975
+   ClientWidth     =   7845
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MDIChild        =   -1  'True
    MinButton       =   0   'False
-   ScaleHeight     =   4980
-   ScaleWidth      =   6975
+   ScaleHeight     =   5175
+   ScaleWidth      =   7845
 End
 Attribute VB_Name = "FrmPelanggan"
 Attribute VB_GlobalNameSpace = False

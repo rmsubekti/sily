@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form FrmTansaksi 
    BorderStyle     =   1  'Fixed Single
-   Caption         =   "Form1"
+   Caption         =   "Transaksi"
    ClientHeight    =   3195
    ClientLeft      =   45
    ClientTop       =   330
