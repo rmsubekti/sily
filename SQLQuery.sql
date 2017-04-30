@@ -62,13 +62,13 @@ create table karyawan(
 	nik varchar(7) not null primary key,
 	--uid as 'UID' + RIGHT('00000' + cast(id as varchar(5)), 5) persisted primary key,
 	nama varchar(30) not null,
-	alamat varchar(50) not null,
 	telp varchar(14) not null,
+	alamat varchar(50) not null,
 	jabatan varchar(20) not null
 )
 
-create table ulogin(
-	nik varchar(7) foreign key references karyawan(nik),
+create table login_karyawan(
+	username varchar(7) foreign key references karyawan(nik),
 	password varchar(20) not null,
 	akses varchar(5) not null
 )
