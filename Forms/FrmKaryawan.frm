@@ -64,14 +64,14 @@ Begin VB.Form FrmKaryawan
       Caption         =   "List Data Karyawan"
       Height          =   3255
       Left            =   3840
-      TabIndex        =   18
+      TabIndex        =   17
       Top             =   120
       Width           =   7575
       Begin MSDataGridLib.DataGrid dataKaryawan 
          Bindings        =   "FrmKaryawan.frx":0000
          Height          =   2175
          Left            =   240
-         TabIndex        =   21
+         TabIndex        =   20
          Top             =   840
          Width           =   7095
          _ExtentX        =   12515
@@ -140,7 +140,7 @@ Begin VB.Form FrmKaryawan
          Caption         =   "Search"
          Height          =   320
          Left            =   6000
-         TabIndex        =   20
+         TabIndex        =   19
          Top             =   340
          Width           =   1335
       End
@@ -148,7 +148,7 @@ Begin VB.Form FrmKaryawan
          Appearance      =   0  'Flat
          Height          =   285
          Left            =   240
-         TabIndex        =   19
+         TabIndex        =   18
          Top             =   360
          Width           =   5775
       End
@@ -158,7 +158,7 @@ Begin VB.Form FrmKaryawan
       Caption         =   "Delete"
       Height          =   330
       Left            =   2520
-      TabIndex        =   16
+      TabIndex        =   15
       Top             =   3605
       Width           =   1095
    End
@@ -167,7 +167,7 @@ Begin VB.Form FrmKaryawan
       Caption         =   "Save"
       Height          =   330
       Left            =   1320
-      TabIndex        =   15
+      TabIndex        =   14
       Top             =   3605
       Width           =   1095
    End
@@ -176,7 +176,7 @@ Begin VB.Form FrmKaryawan
       Caption         =   "New"
       Height          =   330
       Left            =   120
-      TabIndex        =   14
+      TabIndex        =   13
       Top             =   3605
       Width           =   1095
    End
@@ -187,11 +187,21 @@ Begin VB.Form FrmKaryawan
       TabIndex        =   0
       Top             =   120
       Width           =   3495
+      Begin VB.ComboBox cbAkses 
+         Height          =   315
+         ItemData        =   "FrmKaryawan.frx":001A
+         Left            =   1080
+         List            =   "FrmKaryawan.frx":0024
+         TabIndex        =   21
+         Text            =   "NONE"
+         Top             =   2520
+         Width           =   2175
+      End
       Begin VB.TextBox txtJabatan 
          Appearance      =   0  'Flat
          Height          =   285
          Left            =   1080
-         TabIndex        =   13
+         TabIndex        =   12
          Top             =   1800
          Width           =   2175
       End
@@ -199,16 +209,8 @@ Begin VB.Form FrmKaryawan
          Appearance      =   0  'Flat
          Height          =   285
          Left            =   1080
-         TabIndex        =   12
-         Top             =   2160
-         Width           =   2175
-      End
-      Begin VB.TextBox txtAkses 
-         Appearance      =   0  'Flat
-         Height          =   285
-         Left            =   1080
          TabIndex        =   11
-         Top             =   2520
+         Top             =   2160
          Width           =   2175
       End
       Begin VB.TextBox txtNo 
@@ -243,7 +245,7 @@ Begin VB.Form FrmKaryawan
          ForeColor       =   &H80000008&
          Height          =   255
          Left            =   1080
-         TabIndex        =   17
+         TabIndex        =   16
          Top             =   360
          Width           =   2175
       End
@@ -357,7 +359,7 @@ Private Sub dataKaryawan_Click()
         txtNo.Text = .Recordset(3)
         txtJabatan.Text = .Recordset(4)
         txtPassword.Text = .Recordset(5)
-        txtAkses.Text = .Recordset(6)
+        cbAkses.Text = .Recordset(6)
     End With
     needSave = False
 End Sub
@@ -400,7 +402,7 @@ Private Sub clearText()
     txtAlamat.Text = ""
     txtNo.Text = ""
     txtJabatan.Text = ""
-    txtAkses.Text = ""
+    cbAkses.Text = "NONE"
     txtPassword.Text = ""
     txtNama.SetFocus
 End Sub
@@ -434,7 +436,7 @@ Private Sub saveChanges()
         sql = "insert into login_karyawan values('" & _
             lblNik.Caption & "','" & _
             txtPassword.Text & "','" & _
-            txtAkses.Text & "')"
+            cbAkses.Text & "')"
         conn.Execute (sql)
     Else
         sql = "update karyawan set nik ='" & lblNik.Caption & _
@@ -446,7 +448,7 @@ Private Sub saveChanges()
         conn.Execute (sql)
         sql = "update login_karyawan set username ='" & lblNik.Caption & _
             "', password='" & txtPassword.Text & _
-            "', akses='" & txtAkses.Text & _
+            "', akses='" & cbAkses.Text & _
             "'where username ='" & lblNik.Caption & "'"
         conn.Execute (sql)
     End If

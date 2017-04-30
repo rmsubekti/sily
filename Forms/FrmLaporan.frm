@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin VB.Form FrmLaporan 
-   Caption         =   "Form1"
+   Caption         =   "Laporan Jasa Lang Laundry"
    ClientHeight    =   3195
    ClientLeft      =   60
    ClientTop       =   345
@@ -9,6 +9,7 @@ Begin VB.Form FrmLaporan
    ScaleHeight     =   3195
    ScaleWidth      =   4680
    StartUpPosition =   3  'Windows Default
+   WindowState     =   2  'Maximized
 End
 Attribute VB_Name = "FrmLaporan"
 Attribute VB_GlobalNameSpace = False

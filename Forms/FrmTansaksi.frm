@@ -281,7 +281,6 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-Dim lstNamaSelected, newPelanggan As Boolean
 Dim jumlah, total, tarif As Integer
 Dim lsItem As ListItem
 
@@ -304,6 +303,21 @@ Private Sub cmdAdd_Click()
     End If
 End Sub
 
+Private Sub cmdBatal_Click()
+    lstPilih.ListItems.Clear
+    lblTotal.Caption = 0
+    showPaket
+    lblKode.Caption = ""
+    txtNama.Text = ""
+    txtNo.Text = ""
+    txtAlamat.Text = ""
+End Sub
+
+Private Sub cmdPrint_Click()
+    saveTransaksi
+    FrmNota.Show
+End Sub
+
 Private Sub cmdRemove_Click()
     tarif = Val(lstPilih.SelectedItem.SubItems(3)) / Val(lstPilih.SelectedItem.SubItems(4))
     
@@ -315,6 +329,12 @@ Private Sub cmdRemove_Click()
     total = total - Val(lstPilih.SelectedItem.SubItems(3))
     lblTotal.Caption = total
     lstPilih.ListItems.Remove lstPilih.SelectedItem.Index
+End Sub
+
+Private Sub cmdUlang_Click()
+    id_transaksi = lstTransaksi.SelectedItem.Text
+    id_pelanggan = lstTransaksi.SelectedItem.SubItems(5)
+    FrmNota.Show
 End Sub
 
 Private Sub Form_Load()
@@ -339,8 +359,10 @@ Private Sub Form_Load()
     lstTransaksi.ColumnHeaders.Add , , "Total Bayar", 1500
     lstTransaksi.ColumnHeaders.Add , , "Tanggal Diterima", 1800
     lstTransaksi.ColumnHeaders.Add , , "Tanggal Diambil", 1800
+    lstTransaksi.ColumnHeaders.Add , , "id_pelanggan", 0
     Call getKoneksi
     showPaket
+    showTransaksi
 End Sub
 Private Sub showPaket()
     lstPaket.ListItems.Clear
@@ -363,6 +385,9 @@ End Sub
 
 Private Sub showTransaksi()
     lstTransaksi.ListItems.Clear
+    If rs.State = adStateOpen Then
+        rs.Close
+    End If
     rs.Open "select * from transaksi inner join pelanggan ON transaksi.id_pelanggan=pelanggan.id_pelanggan; ", conn, adOpenForwardOnly, adLockReadOnly
     Do Until rs.EOF
         Set lsItem = lstTransaksi.ListItems.Add(, , rs("id_transaksi"))
@@ -370,6 +395,7 @@ Private Sub showTransaksi()
             lsItem.SubItems(2) = rs("biaya")
             lsItem.SubItems(3) = rs("tgl_terima")
             lsItem.SubItems(4) = rs("tgl_ambil")
+            lsItem.SubItems(5) = rs("id_pelanggan")
         rs.MoveNext
     Loop
     rs.Close
@@ -406,57 +432,30 @@ Private Sub txtNama_Change()
 End Sub
 
 Private Sub saveTransaksi()
-    If lblId.Caption <> "" Then
-        id_pelanggan = lblId.Caption
-        id_transaksi = generateIDTransaksi
-        conn.Execute "insert into transaksi(id_pelanggan, biaya,tgl_terima,tgl_ambil) values('" & _
-            id_pelanggan & "','" & total & "',cast(getdate() as datetime), cast(getdate() + 3 as datetime))"
-        
-        'get last inserted id_transaksi
-        rs.Open "select scope_identity()", conn, adOpenForwardOnly, adLockReadOnly, adCmdText
-        If Not rs.EOF Then
-            id_transaksi = rs.Fields(0).Value
-        End If
-        
-        rs.Close
-        Set rs = Nothing
+    id_transaksi = generateIDTransaksi
+    If lblKode.Caption <> "" Then
+        id_pelanggan = lblKode.Caption
+        conn.Execute "insert into transaksi values('" & id_transaksi & "','" & id_pelanggan & "','" & total & _
+            "',cast(getdate() as datetime), cast(getdate() + 3 as datetime))"
         
         For Each lsItem In lstPilih.ListItems
-            conn.Execute "insert into det_transaksi(id_transaksi,id_paket,jumlah,total)" & _
-                "values('" & id_transaksi & "','" & lsItem.Text & "','" & lsItem.SubItems(4) & "','" & _
-                lsItem.SubItems(3) & "')"
+            conn.Execute "insert into det_transaksi values('" & id_transaksi & "','" & _
+                lsItem.Text & "','" & lsItem.SubItems(4) & "','" & lsItem.SubItems(3) & "')"
         Next
     Else
-        conn.Execute "insert into pelanggan(nama,telp,alamat) values('" & _
+        id_pelanggan = generateIDPelanggan
+        conn.Execute "insert into pelanggan values('" & id_pelanggan & "','" & _
             txtNama.Text & "','" & txtNo.Text & "','" & txtAlamat.Text & "')"
             
-        'get last inserted id_pelanggan
-        rs.Open "select scope_identity()", conn, adOpenForwardOnly, adLockReadOnly, adCmdText
-        If Not rs.EOF Then
-            id_pelanggan = rs.Fields(0).Value
-        End If
-        
-        rs.Close
-        Set rs = Nothing
-        
-        conn.Execute "insert into transaksi(id_pelanggan, biaya,tgl_terima,tgl_ambil) values('" & _
-            id_pelanggan & "','" & total & "',cast(getdate() as datetime), cast(getdate() + 3 as datetime))"
-        
-        'get last inserted id_transaksi
-        rs.Open "select scope_identity()", conn, adOpenForwardOnly, adLockReadOnly, adCmdText
-        If Not rs.EOF Then
-            id_transaksi = rs.Fields(0).Value
-        End If
-        
-        rs.Close
-        Set rs = Nothing
+        conn.Execute "insert into transaksi values('" & id_transaksi & "','" & id_pelanggan & "','" & total & _
+            "',cast(getdate() as datetime), cast(getdate() + 3 as datetime))"
         
         For Each lsItem In lstPilih.ListItems
-            conn.Execute "insert into det_transaksi(id_transaksi,id_paket,jumlah,total)" & _
-                "values('" & id_transaksi & "','" & lsItem.Text & "','" & lsItem.SubItems(4) & "','" & _
-                lsItem.SubItems(3) & "')"
+            conn.Execute "insert into det_transaksi values('" & id_transaksi & "','" & _
+                lsItem.Text & "','" & lsItem.SubItems(4) & "','" & lsItem.SubItems(3) & "')"
         Next
     End If
+    showTransaksi
 End Sub
 
 
