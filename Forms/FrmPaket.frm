@@ -285,7 +285,7 @@ Private Sub cmdNew_Click()
     forgotSave
     needSave = True
     clearText
-    incrementAngka
+    txtKode.Caption = generateIDPaket
     cmdDelete.Enabled = False
 End Sub
 
@@ -354,19 +354,6 @@ Private Sub clearText()
     txtTarif.Text = ""
     
     txtPaket.SetFocus
-End Sub
-Private Sub incrementAngka()
-    Dim a As Integer
-    sql = "select max(right(id_paket,3)) from paket"
-    Set rs = conn.Execute(sql)
-    a = IIf(rs(0) <> "NULL", rs(0) + 1, 1)
-    If Val(a) < 10 Then
-        txtKode.Caption = "P00" & a
-    ElseIf Val(a) > 10 And Val(a) < 100 Then
-        txtKode.Caption = "P0" & a
-    Else
-        txtKode.Caption = "P" & a
-    End If
 End Sub
 
 Private Sub forgotSave()

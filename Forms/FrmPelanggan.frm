@@ -287,12 +287,12 @@ Private Sub cmdNew_Click()
     forgotSave
     needSave = True
     clearText
-    incrementAngka
+    txtKode.Caption = generateIDPelanggan
     cmdDelete.Enabled = False
 End Sub
 
 Private Sub cmdSave_Click()
-    saveChanges
+    saveRecord
 End Sub
 
 Private Sub cmdSearch_Click()
@@ -357,31 +357,12 @@ Private Sub clearText()
     
     txtNama.SetFocus
 End Sub
-Private Sub incrementAngka()
-    Dim a As Integer
-    sql = "select max(right(id_pelanggan,6)) from pelanggan"
-    Set rs = conn.Execute(sql)
-    a = IIf(rs(0) <> "NULL", rs(0) + 1, 1)
-    If Val(a) < 10 Then
-        txtKode.Caption = "P00000" & a
-    ElseIf Val(a) > 10 And Val(a) < 100 Then
-        txtKode.Caption = "P0000" & a
-    ElseIf Val(a) > 100 And Val(a) < 1000 Then
-        txtKode.Caption = "P000" & a
-    ElseIf Val(a) > 1000 And Val(a) < 10000 Then
-        txtKode.Caption = "P00" & a
-    ElseIf Val(a) > 10000 And Val(a) < 100000 Then
-        txtKode.Caption = "P0" & a
-    Else
-        txtKode.Caption = "P" & a
-    End If
-End Sub
 
 Private Sub forgotSave()
     If needSave Then
         If MsgBox("Data yang diubah belum tersimpan. " & vbCrLf & _
             "Simpan sekarang ?", vbYesNo, "Konfirmasi") = vbYes Then
-            saveChanges
+            saveRecord
         End If
         needSave = False
     End If
@@ -391,7 +372,7 @@ Function isTextEmpty() As Boolean
     If txtNama.Text = "" Or txtNo.Text = "" Or txtAlamat.Text = "" Then isTextEmpty = True
 End Function
 
-Private Sub saveChanges()
+Private Sub saveRecord()
     If isTextEmpty Then GoTo textKosong
     sql = "select * from pelanggan where id_pelanggan='" & txtKode.Caption & "'"
     Set rs = conn.Execute(sql)

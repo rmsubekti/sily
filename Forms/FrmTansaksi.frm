@@ -45,12 +45,14 @@ Begin VB.Form FrmTransaksi
       Width           =   2700
       _ExtentX        =   4763
       _ExtentY        =   2566
+      View            =   3
+      LabelEdit       =   1
       LabelWrap       =   -1  'True
-      HideSelection   =   -1  'True
+      HideSelection   =   0   'False
+      FullRowSelect   =   -1  'True
       _Version        =   393217
       ForeColor       =   -2147483640
       BackColor       =   -2147483643
-      BorderStyle     =   1
       Appearance      =   1
       NumItems        =   0
    End
@@ -62,12 +64,14 @@ Begin VB.Form FrmTransaksi
       Width           =   8055
       _ExtentX        =   14208
       _ExtentY        =   3836
+      View            =   3
+      LabelEdit       =   1
       LabelWrap       =   -1  'True
-      HideSelection   =   -1  'True
+      HideSelection   =   0   'False
+      FullRowSelect   =   -1  'True
       _Version        =   393217
       ForeColor       =   -2147483640
       BackColor       =   -2147483643
-      BorderStyle     =   1
       Appearance      =   1
       NumItems        =   0
    End
@@ -178,12 +182,14 @@ Begin VB.Form FrmTransaksi
          Width           =   2295
          _ExtentX        =   4048
          _ExtentY        =   2143
+         View            =   3
+         LabelEdit       =   1
          LabelWrap       =   -1  'True
-         HideSelection   =   -1  'True
+         HideSelection   =   0   'False
+         FullRowSelect   =   -1  'True
          _Version        =   393217
          ForeColor       =   -2147483640
          BackColor       =   -2147483643
-         BorderStyle     =   1
          Appearance      =   1
          NumItems        =   0
       End
@@ -195,12 +201,14 @@ Begin VB.Form FrmTransaksi
          Width           =   2295
          _ExtentX        =   4048
          _ExtentY        =   2143
+         View            =   3
+         LabelEdit       =   1
          LabelWrap       =   -1  'True
-         HideSelection   =   -1  'True
+         HideSelection   =   0   'False
+         FullRowSelect   =   -1  'True
          _Version        =   393217
          ForeColor       =   -2147483640
          BackColor       =   -2147483643
-         BorderStyle     =   1
          Appearance      =   1
          NumItems        =   0
       End
@@ -230,9 +238,9 @@ Begin VB.Form FrmTransaksi
       Top             =   3240
       Width           =   495
    End
-   Begin VB.Label Label7 
+   Begin VB.Label lblTotal 
       Alignment       =   2  'Center
-      Caption         =   "Label7"
+      Caption         =   "0"
       BeginProperty Font 
          Name            =   "Courier New"
          Size            =   24
@@ -272,3 +280,183 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Option Explicit
+Dim lstNamaSelected, newPelanggan As Boolean
+Dim jumlah, total, tarif As Integer
+Dim lsItem As ListItem
+
+Private Sub cmdAdd_Click()
+    If txtJumlah.Text = "" Then
+        MsgBox "Silakan masukkan jumlah paket yang di pesan", vbInformation, "Jumlah Belum diisi"
+        txtJumlah.SetFocus
+    Else
+        tarif = Val(lstPaket.SelectedItem.SubItems(3)) * Val(txtJumlah.Text)
+        
+        Set lsItem = lstPilih.ListItems.Add(, , lstPaket.SelectedItem.Text)
+        lsItem.SubItems(1) = lstPaket.SelectedItem.SubItems(1)
+        lsItem.SubItems(2) = lstPaket.SelectedItem.SubItems(2)
+        lsItem.SubItems(3) = tarif
+        lsItem.SubItems(4) = txtJumlah.Text
+        
+        total = total + tarif
+        lblTotal.Caption = total
+        lstPaket.ListItems.Remove lstPaket.SelectedItem.Index
+    End If
+End Sub
+
+Private Sub cmdRemove_Click()
+    tarif = Val(lstPilih.SelectedItem.SubItems(3)) / Val(lstPilih.SelectedItem.SubItems(4))
+    
+    Set lsItem = lstPaket.ListItems.Add(, , lstPilih.SelectedItem.Text)
+    lsItem.SubItems(1) = lstPilih.SelectedItem.SubItems(1)
+    lsItem.SubItems(2) = lstPilih.SelectedItem.SubItems(2)
+    lsItem.SubItems(3) = tarif
+    
+    total = total - Val(lstPilih.SelectedItem.SubItems(3))
+    lblTotal.Caption = total
+    lstPilih.ListItems.Remove lstPilih.SelectedItem.Index
+End Sub
+
+Private Sub Form_Load()
+    lstPaket.ColumnHeaders.Add , , "ID", 0
+    lstPaket.ColumnHeaders.Add , , "Paket", 2120
+    lstPaket.ColumnHeaders.Add , , "Satuan", 0
+    lstPaket.ColumnHeaders.Add , , "Tarif", 0
+    
+    lstPilih.ColumnHeaders.Add , , "ID", 0
+    lstPilih.ColumnHeaders.Add , , "Paket Diambil", 2120
+    lstPilih.ColumnHeaders.Add , , "Satuan", 0
+    lstPilih.ColumnHeaders.Add , , "Tarif", 0
+    lstPilih.ColumnHeaders.Add , , "Jumlah", 0
+    
+    lstPelanggan.ColumnHeaders.Add , , "ID", 0
+    lstPelanggan.ColumnHeaders.Add , , "Nama Pelanggan", 2500
+    lstPelanggan.ColumnHeaders.Add , , "No Telp", 0
+    lstPelanggan.ColumnHeaders.Add , , "Alamat", 0
+    
+    lstTransaksi.ColumnHeaders.Add , , "ID", 850
+    lstTransaksi.ColumnHeaders.Add , , "Nama Pelanggan", 1900
+    lstTransaksi.ColumnHeaders.Add , , "Total Bayar", 1500
+    lstTransaksi.ColumnHeaders.Add , , "Tanggal Diterima", 1800
+    lstTransaksi.ColumnHeaders.Add , , "Tanggal Diambil", 1800
+    Call getKoneksi
+    showPaket
+End Sub
+Private Sub showPaket()
+    lstPaket.ListItems.Clear
+    Dim lsItem As ListItem
+    rs.Open "paket", conn, adOpenForwardOnly, adLockReadOnly
+    If rs.EOF Then
+        lstPaket.ListItems.Clear
+    Else
+        Do Until rs.EOF
+            Set lsItem = lstPaket.ListItems.Add(, , rs("id_paket"))
+                lsItem.SubItems(1) = rs("nama")
+                lsItem.SubItems(2) = rs("satuan")
+                lsItem.SubItems(3) = rs("tarif")
+            rs.MoveNext
+        Loop
+    End If
+    rs.Close
+    Set rs = Nothing
+End Sub
+
+Private Sub showTransaksi()
+    lstTransaksi.ListItems.Clear
+    rs.Open "select * from transaksi inner join pelanggan ON transaksi.id_pelanggan=pelanggan.id_pelanggan; ", conn, adOpenForwardOnly, adLockReadOnly
+    Do Until rs.EOF
+        Set lsItem = lstTransaksi.ListItems.Add(, , rs("id_transaksi"))
+            lsItem.SubItems(1) = rs("nama")
+            lsItem.SubItems(2) = rs("biaya")
+            lsItem.SubItems(3) = rs("tgl_terima")
+            lsItem.SubItems(4) = rs("tgl_ambil")
+        rs.MoveNext
+    Loop
+    rs.Close
+End Sub
+Private Sub searchPelanggan()
+    lstPelanggan.ListItems.Clear
+    If txtNama.Text <> "" Then
+        Dim lsItem As ListItem
+        rs.Open "select * from pelanggan where nama like '%" & txtNama.Text & "%'", _
+                    conn, adOpenForwardOnly, adLockReadOnly
+        If rs.EOF Then
+        
+        Else
+            Do Until rs.EOF
+                Set lsItem = lstPelanggan.ListItems.Add(, , rs("id_pelanggan"))
+                    lsItem.SubItems(1) = rs("nama")
+                    lsItem.SubItems(2) = rs("telp")
+                    lsItem.SubItems(3) = rs("alamat")
+                rs.MoveNext
+            Loop
+        End If
+        rs.Close
+        Set rs = Nothing
+    End If
+End Sub
+Private Sub lstPelanggan_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    lblKode.Caption = lstPelanggan.SelectedItem.Text
+    txtNama.Text = lstPelanggan.SelectedItem.SubItems(1)
+    txtNo.Text = lstPelanggan.SelectedItem.SubItems(2)
+    txtAlamat.Text = lstPelanggan.SelectedItem.SubItems(3)
+End Sub
+Private Sub txtNama_Change()
+    searchPelanggan
+End Sub
+
+Private Sub saveTransaksi()
+    If lblId.Caption <> "" Then
+        id_pelanggan = lblId.Caption
+        id_transaksi = generateIDTransaksi
+        conn.Execute "insert into transaksi(id_pelanggan, biaya,tgl_terima,tgl_ambil) values('" & _
+            id_pelanggan & "','" & total & "',cast(getdate() as datetime), cast(getdate() + 3 as datetime))"
+        
+        'get last inserted id_transaksi
+        rs.Open "select scope_identity()", conn, adOpenForwardOnly, adLockReadOnly, adCmdText
+        If Not rs.EOF Then
+            id_transaksi = rs.Fields(0).Value
+        End If
+        
+        rs.Close
+        Set rs = Nothing
+        
+        For Each lsItem In lstPilih.ListItems
+            conn.Execute "insert into det_transaksi(id_transaksi,id_paket,jumlah,total)" & _
+                "values('" & id_transaksi & "','" & lsItem.Text & "','" & lsItem.SubItems(4) & "','" & _
+                lsItem.SubItems(3) & "')"
+        Next
+    Else
+        conn.Execute "insert into pelanggan(nama,telp,alamat) values('" & _
+            txtNama.Text & "','" & txtNo.Text & "','" & txtAlamat.Text & "')"
+            
+        'get last inserted id_pelanggan
+        rs.Open "select scope_identity()", conn, adOpenForwardOnly, adLockReadOnly, adCmdText
+        If Not rs.EOF Then
+            id_pelanggan = rs.Fields(0).Value
+        End If
+        
+        rs.Close
+        Set rs = Nothing
+        
+        conn.Execute "insert into transaksi(id_pelanggan, biaya,tgl_terima,tgl_ambil) values('" & _
+            id_pelanggan & "','" & total & "',cast(getdate() as datetime), cast(getdate() + 3 as datetime))"
+        
+        'get last inserted id_transaksi
+        rs.Open "select scope_identity()", conn, adOpenForwardOnly, adLockReadOnly, adCmdText
+        If Not rs.EOF Then
+            id_transaksi = rs.Fields(0).Value
+        End If
+        
+        rs.Close
+        Set rs = Nothing
+        
+        For Each lsItem In lstPilih.ListItems
+            conn.Execute "insert into det_transaksi(id_transaksi,id_paket,jumlah,total)" & _
+                "values('" & id_transaksi & "','" & lsItem.Text & "','" & lsItem.SubItems(4) & "','" & _
+                lsItem.SubItems(3) & "')"
+        Next
+    End If
+End Sub
+
+

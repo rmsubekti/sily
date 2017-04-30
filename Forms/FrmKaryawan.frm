@@ -328,7 +328,7 @@ Private Sub cmdNew_Click()
     forgotSave
     needSave = True
     clearText
-    incrementAngka
+    lblNik.Caption = generateIDKaryawan
     cmdDelete.Enabled = False
 End Sub
 
@@ -403,25 +403,6 @@ Private Sub clearText()
     txtAkses.Text = ""
     txtPassword.Text = ""
     txtNama.SetFocus
-End Sub
-Private Sub incrementAngka()
-    Dim a As Integer
-    sql = "select max(right(nik,6)) from karyawan"
-    Set rs = conn.Execute(sql)
-    a = IIf(rs(0) <> "NULL", rs(0) + 1, 1)
-    If Val(a) < 10 Then
-        lblNik.Caption = "K00000" & a
-    ElseIf Val(a) > 10 And Val(a) < 100 Then
-        lblNik.Caption = "K0000" & a
-    ElseIf Val(a) > 100 And Val(a) < 1000 Then
-        lblNik.Caption = "K000" & a
-    ElseIf Val(a) > 1000 And Val(a) < 10000 Then
-        lblNik.Caption = "K00" & a
-    ElseIf Val(a) > 10000 And Val(a) < 100000 Then
-        lblNik.Caption = "K0" & a
-    Else
-        lblNik.Caption = "K" & a
-    End If
 End Sub
 
 Private Sub forgotSave()
