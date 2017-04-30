@@ -298,7 +298,8 @@ End Sub
 Private Sub cmdSearch_Click()
     'Dim searchQuery As String
     'searchQuery = IIf(txtSearch.Text <> "", "'%" & txtSearch.Text & "%'", "'%'")
-    adoPelanggan.RecordSource = "select * from pelanggan where nama like '%" & txtSearch.Text & "%';"
+    adoPelanggan.RecordSource = "select id_pelanggan as ID,nama as Nama, telp as Telepon, alamat as Alamat " & _
+    " from pelanggan where nama like '%" & txtSearch.Text & "%';"
     
     adoPelanggan.Refresh
     If adoPelanggan.Recordset.BOF Then
@@ -342,7 +343,7 @@ Private Sub txtNo_Change()
     needSave = True
 End Sub
 Private Sub refreshDataGrid()
-    sql = "pelanggan"
+    sql = "select id_pelanggan as ID,nama as Nama, telp as Telepon, alamat as Alamat from pelanggan"
     adoPelanggan.ConnectionString = konek
     adoPelanggan.RecordSource = sql
     adoPelanggan.Refresh
@@ -400,11 +401,7 @@ End Sub
 
 
 Private Sub txtSearch_Change()
-    adoPelanggan.RecordSource = "select * from pelanggan where nama like '%" & txtSearch.Text & "%';"
-    
+    adoPelanggan.RecordSource = "select id_pelanggan as ID,nama as Nama, telp as Telepon, alamat as Alamat" & _
+        " from pelanggan where nama like '%" & txtSearch.Text & "%';"
     adoPelanggan.Refresh
-    If adoPelanggan.Recordset.BOF Then
-        MsgBox ("Pelanggan dengan nama " & txtSearch.Text & " tidak ada.")
-        refreshDataGrid
-    End If
 End Sub

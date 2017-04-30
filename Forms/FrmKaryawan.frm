@@ -341,7 +341,8 @@ End Sub
 Private Sub cmdSearch_Click()
     'Dim searchQuery As String
     'searchQuery = IIf(txtSearch.Text <> "", "'%" & txtSearch.Text & "%'", "'%'")
-    adoKaryawan.RecordSource = "select * from karyawan where nama like '%" & txtSearch.Text & "%';"
+    adoKaryawan.RecordSource = "select nik as NIK ,nama as Nama,alamat as Alamat,telp as Telepon,jabatan as Jabatan,password as Password,akses as Akses " & _
+        "from karyawan inner join login_karyawan on karyawan.nik = login_karyawan.username where nama like '%" & txtSearch.Text & "%'"
     
     adoKaryawan.Refresh
     If adoKaryawan.Recordset.BOF Then
@@ -388,8 +389,8 @@ Private Sub txtNo_Change()
     needSave = True
 End Sub
 Private Sub refreshDataGrid()
-    sql = "select nik,nama,alamat,telp,jabatan,password,akses from karyawan inner join login_karyawan on " & _
-        "karyawan.nik = login_karyawan.username"
+    sql = "select nik as NIK ,nama as Nama,alamat as Alamat,telp as Telepon,jabatan as Jabatan,password as Password,akses as Akses " & _
+        "from karyawan inner join login_karyawan on karyawan.nik = login_karyawan.username"
     adoKaryawan.ConnectionString = konek
     adoKaryawan.RecordSource = sql
     adoKaryawan.Refresh

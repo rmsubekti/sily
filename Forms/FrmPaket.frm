@@ -296,7 +296,8 @@ End Sub
 Private Sub cmdSearch_Click()
     'Dim searchQuery As String
     'searchQuery = IIf(txtSearch.Text <> "", "'%" & txtSearch.Text & "%'", "'%'")
-    adoPaket.RecordSource = "select * from paket where nama like '%" & txtSearch.Text & "%';"
+    adoPaket.RecordSource = "select id_paket as ID, nama as Paket, tarif as Tarif, satuan as Satuan " & _
+        "from paket where nama like '%" & txtSearch.Text & "%';"
     
     adoPaket.Refresh
     If adoPaket.Recordset.BOF Then
@@ -340,7 +341,7 @@ Private Sub txtTarif_Change()
     needSave = True
 End Sub
 Private Sub refreshDataGrid()
-    sql = "paket"
+    sql = "select id_paket as ID, nama as Paket, tarif as Tarif, satuan as Satuan from paket"
     adoPaket.ConnectionString = konek
     adoPaket.RecordSource = sql
     adoPaket.Refresh
@@ -363,6 +364,7 @@ Private Sub forgotSave()
             saveChanges
         End If
         needSave = False
+        cmdDelete.Enabled = True
     End If
 End Sub
 
@@ -374,7 +376,7 @@ Private Sub saveChanges()
     If isTextEmpty Then
         GoTo textKosong
     ElseIf txtKode.Caption = "" Then
-        incrementAngka
+        generateIDPaket
     End If
     sql = "select * from paket where id_paket='" & txtKode.Caption & "'"
     Set rs = conn.Execute(sql)
@@ -401,15 +403,10 @@ textKosong:
     MsgBox "Silakan masukkan informasi paket dengan lengkap.", vbCritical, "Input Kosong"
 End Sub
 
-
 Private Sub txtSearch_Change()
-    adoPaket.RecordSource = "select * from paket where nama like '%" & txtSearch.Text & "%';"
-    
+    adoPaket.RecordSource = "select id_paket as ID, nama as Paket, tarif as Tarif, satuan as Satuan " & _
+        " from paket where nama like '%" & txtSearch.Text & "%';"
     adoPaket.Refresh
-    If adoPaket.Recordset.BOF Then
-        MsgBox ("Paket dengan nama " & txtSearch.Text & " tidak ada.")
-        refreshDataGrid
-    End If
 End Sub
 
 
