@@ -77,7 +77,7 @@ Begin VB.Form FrmPelanggan
       Height          =   330
       Left            =   1320
       TabIndex        =   14
-      Top             =   3610
+      Top             =   3600
       Width           =   1100
    End
    Begin VB.CommandButton cmdDelete 
@@ -347,6 +347,13 @@ Private Sub refreshDataGrid()
     adoPelanggan.ConnectionString = konek
     adoPelanggan.RecordSource = sql
     adoPelanggan.Refresh
+    
+    If adoPelanggan.Recordset.EOF And adoPelanggan.Recordset.BOF Then
+        adoPelanggan.Enabled = False
+    Else
+        adoPelanggan.Enabled = True
+    End If
+    
     Set dataPelanggan.DataSource = adoPelanggan
 End Sub
 Private Sub clearText()
@@ -401,7 +408,7 @@ End Sub
 
 
 Private Sub txtSearch_Change()
-    adoPelanggan.RecordSource = "select id_pelanggan as ID,nama as Nama, telp as Telepon, alamat as Alamat" & _
+    adoPelanggan.RecordSource = "select top 8 id_pelanggan as ID,nama as Nama, telp as Telepon, alamat as Alamat" & _
         " from pelanggan where nama like '%" & txtSearch.Text & "%';"
     adoPelanggan.Refresh
 End Sub

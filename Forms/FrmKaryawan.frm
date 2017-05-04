@@ -394,6 +394,11 @@ Private Sub refreshDataGrid()
     adoKaryawan.ConnectionString = konek
     adoKaryawan.RecordSource = sql
     adoKaryawan.Refresh
+    If adoKaryawan.Recordset.EOF And adoKaryawan.Recordset.BOF Then
+        dataKaryawan.Enabled = False
+    Else
+        dataKaryawan.Enabled = True
+    End If
     Set dataKaryawan.DataSource = adoKaryawan
 End Sub
 Private Sub clearText()

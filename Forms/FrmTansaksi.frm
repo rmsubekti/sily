@@ -14,6 +14,7 @@ Begin VB.Form FrmTransaksi
    ScaleHeight     =   4575
    ScaleWidth      =   11085
    Begin VB.CommandButton cmdUlang 
+      Appearance      =   0  'Flat
       Caption         =   "Print Ulang"
       Height          =   375
       Left            =   8400
@@ -22,6 +23,7 @@ Begin VB.Form FrmTransaksi
       Width           =   2535
    End
    Begin VB.CommandButton cmdBatal 
+      Appearance      =   0  'Flat
       Caption         =   "Batal"
       Height          =   330
       Left            =   9720
@@ -30,6 +32,7 @@ Begin VB.Form FrmTransaksi
       Width           =   1200
    End
    Begin VB.CommandButton cmdPrint 
+      Appearance      =   0  'Flat
       Caption         =   "Print"
       Height          =   330
       Left            =   8400
@@ -83,6 +86,7 @@ Begin VB.Form FrmTransaksi
       Top             =   120
       Width           =   3015
       Begin VB.TextBox txtAlamat 
+         Appearance      =   0  'Flat
          Height          =   300
          Left            =   840
          TabIndex        =   13
@@ -90,6 +94,7 @@ Begin VB.Form FrmTransaksi
          Width           =   2000
       End
       Begin VB.TextBox txtNo 
+         Appearance      =   0  'Flat
          Height          =   300
          Left            =   840
          TabIndex        =   12
@@ -97,6 +102,7 @@ Begin VB.Form FrmTransaksi
          Width           =   2000
       End
       Begin VB.TextBox txtNama 
+         Appearance      =   0  'Flat
          Height          =   300
          Left            =   840
          TabIndex        =   11
@@ -104,7 +110,11 @@ Begin VB.Form FrmTransaksi
          Width           =   2000
       End
       Begin VB.Label lblKode 
+         Appearance      =   0  'Flat
+         BackColor       =   &H80000004&
+         BackStyle       =   0  'Transparent
          BorderStyle     =   1  'Fixed Single
+         ForeColor       =   &H80000008&
          Height          =   300
          Left            =   840
          TabIndex        =   22
@@ -152,6 +162,7 @@ Begin VB.Form FrmTransaksi
       Top             =   120
       Width           =   4935
       Begin VB.TextBox txtJumlah 
+         Appearance      =   0  'Flat
          Height          =   300
          Left            =   840
          TabIndex        =   23
@@ -159,6 +170,7 @@ Begin VB.Form FrmTransaksi
          Width           =   1575
       End
       Begin VB.CommandButton cmdRemove 
+         Appearance      =   0  'Flat
          Caption         =   "Remove"
          Height          =   330
          Left            =   3720
@@ -167,6 +179,7 @@ Begin VB.Form FrmTransaksi
          Width           =   1100
       End
       Begin VB.CommandButton cmdAdd 
+         Appearance      =   0  'Flat
          Caption         =   "Add"
          Height          =   330
          Left            =   2520
@@ -285,21 +298,26 @@ Dim jumlah, total, tarif As Integer
 Dim lsItem As ListItem
 
 Private Sub cmdAdd_Click()
-    If txtJumlah.Text = "" Then
-        MsgBox "Silakan masukkan jumlah paket yang di pesan", vbInformation, "Jumlah Belum diisi"
-        txtJumlah.SetFocus
+    If lstPaket.ListItems.Count > 0 Then
+        If txtJumlah.Text = "" Then
+            MsgBox "Silakan masukkan jumlah paket yang di pesan", vbInformation, "Jumlah Belum diisi"
+            txtJumlah.SetFocus
+        Else
+            tarif = Val(lstPaket.SelectedItem.SubItems(3)) * Val(txtJumlah.Text)
+        
+            Set lsItem = lstPilih.ListItems.Add(, , lstPaket.SelectedItem.Text)
+            lsItem.SubItems(1) = lstPaket.SelectedItem.SubItems(1)
+            lsItem.SubItems(2) = lstPaket.SelectedItem.SubItems(2)
+            lsItem.SubItems(3) = tarif
+            lsItem.SubItems(4) = txtJumlah.Text
+        
+            total = total + tarif
+            lblTotal.Caption = total
+            lstPaket.ListItems.Remove lstPaket.SelectedItem.Index
+            cmdRemove.Enabled = True
+        End If
     Else
-        tarif = Val(lstPaket.SelectedItem.SubItems(3)) * Val(txtJumlah.Text)
-        
-        Set lsItem = lstPilih.ListItems.Add(, , lstPaket.SelectedItem.Text)
-        lsItem.SubItems(1) = lstPaket.SelectedItem.SubItems(1)
-        lsItem.SubItems(2) = lstPaket.SelectedItem.SubItems(2)
-        lsItem.SubItems(3) = tarif
-        lsItem.SubItems(4) = txtJumlah.Text
-        
-        total = total + tarif
-        lblTotal.Caption = total
-        lstPaket.ListItems.Remove lstPaket.SelectedItem.Index
+        cmdAdd.Enabled = False
     End If
 End Sub
 
@@ -311,24 +329,36 @@ Private Sub cmdBatal_Click()
     txtNama.Text = ""
     txtNo.Text = ""
     txtAlamat.Text = ""
+    txtJumlah.Text = ""
 End Sub
 
 Private Sub cmdPrint_Click()
-    saveTransaksi
-    FrmNota.Show
+    If lstPilih.ListItems.Count > 0 Then
+        saveTransaksi
+        FrmNota.Show
+        cmdPrint.Enabled = False
+        cmdBatal_Click
+    Else
+        MsgBox "Silakan paket untuk di laundry", vbCritical, "Paket belum dipilih"
+    End If
 End Sub
 
 Private Sub cmdRemove_Click()
-    tarif = Val(lstPilih.SelectedItem.SubItems(3)) / Val(lstPilih.SelectedItem.SubItems(4))
+    If lstPilih.ListItems.Count > 0 Then
+        tarif = Val(lstPilih.SelectedItem.SubItems(3)) / Val(lstPilih.SelectedItem.SubItems(4))
     
-    Set lsItem = lstPaket.ListItems.Add(, , lstPilih.SelectedItem.Text)
-    lsItem.SubItems(1) = lstPilih.SelectedItem.SubItems(1)
-    lsItem.SubItems(2) = lstPilih.SelectedItem.SubItems(2)
-    lsItem.SubItems(3) = tarif
+        Set lsItem = lstPaket.ListItems.Add(, , lstPilih.SelectedItem.Text)
+        lsItem.SubItems(1) = lstPilih.SelectedItem.SubItems(1)
+        lsItem.SubItems(2) = lstPilih.SelectedItem.SubItems(2)
+        lsItem.SubItems(3) = tarif
     
-    total = total - Val(lstPilih.SelectedItem.SubItems(3))
-    lblTotal.Caption = total
-    lstPilih.ListItems.Remove lstPilih.SelectedItem.Index
+        total = total - Val(lstPilih.SelectedItem.SubItems(3))
+        lblTotal.Caption = total
+        lstPilih.ListItems.Remove lstPilih.SelectedItem.Index
+        cmdAdd.Enabled = True
+    Else
+        cmdRemove.Enabled = False
+    End If
 End Sub
 
 Private Sub cmdUlang_Click()
@@ -339,30 +369,31 @@ End Sub
 
 Private Sub Form_Load()
     lstPaket.ColumnHeaders.Add , , "ID", 0
-    lstPaket.ColumnHeaders.Add , , "Paket", 2120
+    lstPaket.ColumnHeaders.Add , , "Paket", 2000
     lstPaket.ColumnHeaders.Add , , "Satuan", 0
     lstPaket.ColumnHeaders.Add , , "Tarif", 0
     
     lstPilih.ColumnHeaders.Add , , "ID", 0
-    lstPilih.ColumnHeaders.Add , , "Paket Diambil", 2120
+    lstPilih.ColumnHeaders.Add , , "Paket Diambil", 2000
     lstPilih.ColumnHeaders.Add , , "Satuan", 0
     lstPilih.ColumnHeaders.Add , , "Tarif", 0
     lstPilih.ColumnHeaders.Add , , "Jumlah", 0
     
     lstPelanggan.ColumnHeaders.Add , , "ID", 0
-    lstPelanggan.ColumnHeaders.Add , , "Nama Pelanggan", 2500
+    lstPelanggan.ColumnHeaders.Add , , "Nama Pelanggan", 2400
     lstPelanggan.ColumnHeaders.Add , , "No Telp", 0
     lstPelanggan.ColumnHeaders.Add , , "Alamat", 0
     
     lstTransaksi.ColumnHeaders.Add , , "ID", 850
-    lstTransaksi.ColumnHeaders.Add , , "Nama Pelanggan", 1900
-    lstTransaksi.ColumnHeaders.Add , , "Total Bayar", 1500
-    lstTransaksi.ColumnHeaders.Add , , "Tanggal Diterima", 1800
-    lstTransaksi.ColumnHeaders.Add , , "Tanggal Diambil", 1800
+    lstTransaksi.ColumnHeaders.Add , , "Nama Pelanggan", 2000
+    lstTransaksi.ColumnHeaders.Add , , "Total Bayar", 1400
+    lstTransaksi.ColumnHeaders.Add , , "Tanggal Diterima", 1750
+    lstTransaksi.ColumnHeaders.Add , , "Tanggal Diambil", 1750
     lstTransaksi.ColumnHeaders.Add , , "id_pelanggan", 0
     Call getKoneksi
     showPaket
     showTransaksi
+    cmdPrint.Enabled = False
 End Sub
 Private Sub showPaket()
     lstPaket.ListItems.Clear
@@ -388,7 +419,7 @@ Private Sub showTransaksi()
     If rs.State = adStateOpen Then
         rs.Close
     End If
-    rs.Open "select * from transaksi inner join pelanggan ON transaksi.id_pelanggan=pelanggan.id_pelanggan; ", conn, adOpenForwardOnly, adLockReadOnly
+    rs.Open "select top 50 * from transaksi inner join pelanggan ON transaksi.id_pelanggan=pelanggan.id_pelanggan order by id_transaksi desc;", conn, adOpenForwardOnly, adLockReadOnly
     Do Until rs.EOF
         Set lsItem = lstTransaksi.ListItems.Add(, , rs("id_transaksi"))
             lsItem.SubItems(1) = rs("nama")
@@ -459,3 +490,6 @@ Private Sub saveTransaksi()
 End Sub
 
 
+Private Sub txtNo_Change()
+    If txtNama.Text <> "" Then cmdPrint.Enabled = True
+End Sub

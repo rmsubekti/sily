@@ -345,6 +345,13 @@ Private Sub refreshDataGrid()
     adoPaket.ConnectionString = konek
     adoPaket.RecordSource = sql
     adoPaket.Refresh
+    
+    If adoPaket.Recordset.EOF And adoPaket.Recordset.BOF Then
+        adoPaket.Enabled = False
+    Else
+        adoPaket.Enabled = True
+    End If
+    
     Set dataPaket.DataSource = adoPaket
 End Sub
 Private Sub clearText()
@@ -390,9 +397,9 @@ Private Sub saveChanges()
     Else
         sql = "update paket set id_paket ='" & txtKode.Caption & _
             "', nama='" & txtPaket.Text & _
-            "', telp='" & txtTarif.Text & _
-            "', alamat='" & txtSatuan.Text & _
-            "' where id_paket ='" & txtKode.Caption & ""
+            "', tarif='" & txtTarif.Text & _
+            "', satuan='" & txtSatuan.Text & _
+            "' where id_paket ='" & txtKode.Caption & "'"
         Set rs = conn.Execute(sql)
     End If
     refreshDataGrid
@@ -404,7 +411,7 @@ textKosong:
 End Sub
 
 Private Sub txtSearch_Change()
-    adoPaket.RecordSource = "select id_paket as ID, nama as Paket, tarif as Tarif, satuan as Satuan " & _
+    adoPaket.RecordSource = "select top 8 id_paket as ID, nama as Paket, tarif as Tarif, satuan as Satuan " & _
         " from paket where nama like '%" & txtSearch.Text & "%';"
     adoPaket.Refresh
 End Sub

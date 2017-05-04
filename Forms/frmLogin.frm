@@ -206,6 +206,10 @@ Private Sub cmdOK_Click()
     
 End Sub
 
+Private Sub Form_Load()
+Call getKoneksi
+End Sub
+
 Private Sub txtUserName_KeyDown(KeyCode As Integer, Shift As Integer)
     If KeyCode = 13 Then txtUserName.SetFocus
 End Sub

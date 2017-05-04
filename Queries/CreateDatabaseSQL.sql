@@ -66,8 +66,8 @@ create table karyawan(
 	--uid as 'UID' + RIGHT('00000' + cast(id as varchar(5)), 5) persisted primary key,
 	nama varchar(30) not null,
 	telp varchar(14) not null,
-	alamat varchar(50) not null,
-	jabatan varchar(20) not null
+	alamat varchar(50),
+	jabatan varchar(20)
 )
 
 create table login_karyawan(
