@@ -7,7 +7,7 @@ Public needSave As Boolean
 
 Public Sub getKoneksi()
     On Error GoTo koneksiError
-    konek = "Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=sa;Initial Catalog=db_laundry;Data Source=SU\SQLEXPRESS"
+    konek = "Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=sa;Initial Catalog=db_laundry;Data Source=BEKTI\SQLEXPRESS"
     If conn.State = adStateOpen Then
         conn.Close
         Set conn = New Connection
